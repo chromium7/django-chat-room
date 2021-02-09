@@ -3,5 +3,15 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-    <div class="hello"><h1>hello world</h1></div>
+    <div class="text-center">
+        <h1 class="display-1 mt-3 text-center">Hello, World</h1>
+        <h4 class="mt-4">Enter chat room ID:</h4>
+        <form action="{% url 'chat:chat_redirect' %}" method="post">
+            {% csrf_token %}
+            <div class="input-group mb-3">
+                <input type="number" name="room_id" class="form-control" placeholder="Room's ID" aria-label="Room's ID" aria-describedby="button-addon">
+                <button class="btn btn-primary" type="submit" id="button-addon">Join</button>
+            </div>
+        </form>
+    </div>
 {% endblock %}

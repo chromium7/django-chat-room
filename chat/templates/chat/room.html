@@ -1,8 +1,20 @@
 {% extends 'base.html' %}
 
-{% block title %}Chat room {{ room_id }}{% endblock %}
+{% block title %}Room {{ room_id }}{% endblock %}
 
 {% block content %}
-    <h1>BRUH {{ room_id }}</h1>
+    <div id="chat-wrapper">
+        <h3>Room {{ room_id }}</h3>
+        <div id="chat-container">
+            <div id="chat"></div>
+        </div>
+        <div id="chat-input" class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Write message here" aria-label="Write message here" aria-describedby="button-addon">
+            <button class="btn btn-success" type="button" id="button-addon">Send</button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
 
 {% endblock %}

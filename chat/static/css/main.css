@@ -1,4 +1,48 @@
-form {
+form,
+#chat-wrapper {
   margin: auto;
-  width: 40%;
+  width: 50%;
+}
+
+#chat-wrapper h3 {
+  margin: 0.4em 0;
+}
+
+#chat-container {
+  position: relative;
+  height: 75vh;
+}
+
+#chat {
+  top: 0px;
+  bottom: 0;
+  position: absolute;
+  width: 100%;
+  overflow-y: scroll;
+  background: lightsteelblue;
+}
+
+#chat .message {
+  background: #efefef;
+  padding: 10px 20px;
+  border-radius: 4px;
+  width: auto;
+  display: inline;
+  float: left;
+  margin: 10px 10px 0;
+  min-width: 440px;
+  clear: both;
+}
+
+#chat .message.me {
+  display: inline;
+  float: right;
+  background: #dcede0;
+  color: #56a668;
+}
+
+#chat .date {
+  color: #aaa;
+  font-style: italic;
+  font-size: 12px;
 }

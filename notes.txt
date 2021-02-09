@@ -1,0 +1,19 @@
+# Channels and ASGI
+
+1. Install channels and configure settings, routing.py
+
+2. Set up a consumer: Consumers are individual pieces of code that can handle
+WebSockets in a very similar way to traditional HTTP views. You will build
+a consumer to read and write messages to a communication channel.
+
+3. Configure routing: Channels provides routing classes that allow you to
+combine and stack your consumers. You will configure URL routing for
+your chat consumer.
+
+4. Implement a WebSocket client: When the student accesses the chat room,
+you will connect to the WebSocket from the browser and send or receive
+messages using JavaScript.
+
+5. Enable a channel layer: Channel layers allow you to talk between different
+instances of an application. They're a useful part of making a distributed
+real-time application. You will set up a channel layer using Redis.

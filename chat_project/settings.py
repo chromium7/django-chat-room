@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # Third party app
+    'channels',
     # Local
     'chat.apps.ChatConfig'
 ]
@@ -71,7 +72,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'chat_project.wsgi.application'
-
+ASGI_APPLICATION = 'chat_project.routing.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases

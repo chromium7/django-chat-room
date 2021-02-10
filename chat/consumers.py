@@ -8,23 +8,53 @@ URLs are mapped to consumers through routing classes that allows combining and s
 
 import json
 from channels.generic.websocket import WebsocketConsumer
+from asgiref.sync import async_to_sync
 
-class ChatConsumer(WebSocketConsumer):
+from django.utils import timezone
+
+
+class ChatConsumer(WebsocketConsumer):
     def connect(self):
         # Called when a new connection is received
+        self.user = self.scope['user']
+        self.id = self.scope['url_route']['kwargs']['room_id']
+        self.room_group_name = 'chat_%s' % self.id
+        
+        # Join room group
+        async_to_sync(self.channel_layer.group_add) (
+            self.room_group_name,
+            self.channel_name
+        )
+
         # Accept connection
         self.accept()
 
     def disconnect(self, close_code):
         # Called when the socket closes
-        # Pass because we dont do any action 
-        # when a client closes connection
-        pass
+        # Leave room group
+        async_to_sync(self.channel_layer.group_discard) (
+            self.room_group_name,
+            self.channel_name
+        )
 
     def receive(self, text_data):
         # Called whenever data is received
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
-        # Echo the message to WebSocket
-        self.send(text_data=json.dumps({'message': message}))
+        now = timezone.now()
 
+        # Send the message to room group
+        async_to_sync(self.channel_layer.group_send) (
+            self.room_group_name,
+            {
+                'type': 'chat_message',
+                'message': message,
+                'user': self.user.username,
+                'datetime': now.isoformat(),
+            }
+        )
+    
+    # Receive message from room group
+    def chat_message(self, event):
+        # Send message to WebSocket
+        self.send(text_data=json.dumps(event))

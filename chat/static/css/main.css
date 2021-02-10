@@ -15,11 +15,12 @@ form,
 
 #chat {
   top: 0px;
-  bottom: 0;
+  bottom: 0px;
   position: absolute;
   width: 100%;
   overflow-y: scroll;
   background: lightsteelblue;
+  padding-bottom: 10px;
 }
 
 #chat .message {
@@ -30,7 +31,8 @@ form,
   display: inline;
   float: left;
   margin: 10px 10px 0;
-  min-width: 440px;
+  min-width: 40%;
+  max-width: 80%;
   clear: both;
 }
 

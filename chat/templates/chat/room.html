@@ -9,12 +9,63 @@
             <div id="chat"></div>
         </div>
         <div id="chat-input" class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Write message here" aria-label="Write message here" aria-describedby="button-addon">
-            <button class="btn btn-success" type="button" id="button-addon">Send</button>
+            <input type="text" class="form-control" placeholder="Write message here" id="chat-message-input">
+            <button class="btn btn-success" type="button" id="chat-message-submit">Send</button>
         </div>
     </div>
 {% endblock %}
 
-{% block script %}
+{% block javascript %}
+    var url = 'ws://' + window.location.host + '/ws/chat/' + '{{ room_id }}/';
+    var chatSocket = new WebSocket(url);
 
+    chatSocket.onmessage = (e) => {
+        var data = JSON.parse(e.data);
+        var message = data.message;
+        var dateOptions = {hour: 'numeric', minute: 'numeric', hour12: true};
+        var datetime = new Date(data['datetime']).toLocaleString('en', dateOptions);
+
+        var isMe = data.user === '{{ request.user }}';
+        var source = isMe ? 'me' : 'other';
+        var name = isMe? 'Me' : data.user;
+
+        var chat = document.querySelector('#chat');
+
+        // Add new message to the chat box
+        var newMessage = document.createElement('div');
+        newMessage.className = "message " + source;
+        newMessage.innerHTML = `<strong>${name}</strong> <span class="date">${datetime}</span><br>${message}`;
+        chat.appendChild(newMessage);
+
+        // Scroll to the bottom of the div
+        chat.scrollTop = chat.scrollHeight;
+    };
+
+    chatSocket.onclose = (e) => {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    var input = document.querySelector("#chat-message-input");
+    var submit = document.querySelector("#chat-message-submit");
+
+    submit.addEventListener('click', () => {
+        var message = input.value;
+        if (message) {
+            // Send message in JSON format
+            chatSocket.send(JSON.stringify({'message': message}));
+
+            // Clear input
+            input.value = "";
+
+            // return focus
+            input.focus();
+        }
+    })
+
+    input.focus();
+    input.addEventListener('keypress', (e) => {
+        if (e.key === "Enter") {
+            submit.click();
+        }
+    });
 {% endblock %}

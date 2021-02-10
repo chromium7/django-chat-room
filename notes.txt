@@ -17,3 +17,24 @@ messages using JavaScript.
 5. Enable a channel layer: Channel layers allow you to talk between different
 instances of an application. They're a useful part of making a distributed
 real-time application. You will set up a channel layer using Redis.
+
+
+# Starting redis in windows server
+
+1. Open ubuntu lts
+
+2.  > sudo apt-get update
+    > sudo apt-get upgrade
+    > sudo apt-get install redis-server
+    > redis-cli -v
+
+3.  > sudo service redis-server restart
+
+4. Test
+$ redis-cli 
+127.0.0.1:6379> set user:1 "Jane"
+127.0.0.1:6379> get user:1
+"Jane"
+
+5. Stop
+    > sudo service redis-server stop

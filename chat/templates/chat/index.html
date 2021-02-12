@@ -5,13 +5,18 @@
 {% block content %}
     <div class="text-center">
         <h1 class="display-1 mt-3 text-center">Hello, World</h1>
-        <h4 class="mt-4">Enter chat room ID:</h4>
-        <form action="{% url 'chat:chat_redirect' %}" method="post">
-            {% csrf_token %}
-            <div class="input-group mb-3">
-                <input type="number" name="room_id" class="form-control" placeholder="Room's ID" aria-label="Room's ID" aria-describedby="button-addon">
-                <button class="btn btn-primary" type="submit" id="button-addon">Join</button>
-            </div>
-        </form>
+        {% if user.is_authenticated %}
+            <h4 class="mt-4">Enter chat room ID:</h4>
+            <form action="{% url 'chat:chat_redirect' %}" method="post">
+                {% csrf_token %}
+                <div class="input-group mb-3">
+                    <input type="number" name="room_id" class="form-control" placeholder="Room's ID" aria-label="Room's ID" aria-describedby="button-addon">
+                    <button class="btn btn-primary" type="submit" id="button-addon">Join</button>
+                </div>
+            </form>
+        {% else %}
+            <h4 class='mt-4'>Please <a href="{% url 'chat:login' %}">login</a> to join a chat room.</h4>
+            <h5>Don't have an account? <a href="{% url 'chat:register' %}">Sign up.</a></h5>
+        {% endif %}
     </div>
 {% endblock %}

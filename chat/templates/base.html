@@ -12,7 +12,16 @@
 </head>
 <body>
     <nav class="navbar navbar-light bg-light">
-        <a class="navbar-brand m-auto" href="#">Django Chat</a>
+        <a class="navbar-brand" href="{% url 'chat:home' %}">Django Chat</a>
+        {% if user.is_authenticated %}
+            <div class="d-flex flex-row bd-highlight nav-log">
+                <div class="p-2 bd-highlight">Hello {{ user.username }}</div>
+                <div class="p-2 bd-highlight"><a href="{% url 'chat:logout' %}">Logout</a></div>
+            </div>
+        {% else %}
+            <a href="{% url 'chat:login' %}" class='nav-log'>Login</a>
+        {% endif %}
+
     </nav>
     <div class="container-sm">
         {% block content %}

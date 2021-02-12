@@ -135,3 +135,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# Login/logout redirect
+
+LOGIN_REDIRECT_URL = 'chat:home'
+LOGOUT_REDIRECT_URL = 'chat:home'
+LOGIN_URL = 'chat:login'
+LOGOUT_URL = 'chat:logout'

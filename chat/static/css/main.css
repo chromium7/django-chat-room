@@ -48,3 +48,11 @@ form,
   font-style: italic;
   font-size: 12px;
 }
+
+.nav-log {
+  margin: auto 2em auto 0;
+}
+
+.navbar-brand {
+  margin: auto auto auto 2em;
+}

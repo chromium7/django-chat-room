@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+    <div class="text-center">
+        <h1 class="display-1 mt-3">Login</h1>
+        <form action="{% url 'chat:login' %}" method="post" class='w-50 text-start'>
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="mb-3 row">
+                    <label class="col-sm-4 col-form-label" for="{{ field.id_for_label }}">{{ field.html_name|capfirst }}</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" id="{{ field.id_for_label }}" maxlength="30" name="{{ field.html_name }}" type="text" />                 
+                    </div>
+                    {{ field.errors }}
+                </div>
+            {% endfor %}
+            <input type="hidden" name="next" value="{{ next }}">
+            <p class='text-center'><input class="btn btn-primary" type="submit" value="Login"></p>
+        </form>
+        <p>
+            Don't have an account?
+            <br>
+            <a href="{% url 'chat:register' %}" class="fs-6">Register an account.</a>
+        </p>
+    </div>
+{% endblock %}

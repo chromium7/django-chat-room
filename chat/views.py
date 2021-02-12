@@ -4,22 +4,35 @@ from django.views.decorators.http import require_POST
 from .forms import UserRegistrationForm
 
 def index(request):
+    """
+    Render homepage
+    """
     return render(request, 'chat/index.html')
 
 
 @require_POST
 def chat_redirect(request):
+    """
+    Redirect user who input a room number to the corresponding chat room
+    """
     room_id = int(request.POST['room_id'])
     return redirect('chat:chat_room', room_id)
 
 
 def chat_room(request, room_id):
+    """
+    Render chat room according to id specified
+    """
     return render(request, 'chat/room.html', {
         'room_id': room_id
     })
 
 
 def register(request):
+    """
+    Create an account when post request is received
+    Render registration page when get request is received
+    """
     if request.method == "POST":
         user_form = UserRegistrationForm(request.POST)
         if user_form.is_valid():

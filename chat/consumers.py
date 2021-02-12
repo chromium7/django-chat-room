@@ -14,6 +14,10 @@ from django.utils import timezone
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
+    """
+    Main chat consumer for each user that join a chat room
+    """
+
     async def connect(self):
         # Called when a new connection is received
         self.user = self.scope['user']

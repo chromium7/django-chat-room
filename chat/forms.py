@@ -57,3 +57,6 @@ class CreateRoomForm(forms.ModelForm):
             visible.field.widget.attrs['class'] = 'form-control'
 
         self.order_fields(['name', 'password'])
+
+    def clean_password(self):
+        return self.cleaned_data['password'] or None

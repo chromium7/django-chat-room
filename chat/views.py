@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, reverse
 from django.views.decorators.http import require_POST
 
 from .forms import UserRegistrationForm, CreateRoomForm
+from .models import Room
 
 def index(request):
     """
@@ -33,8 +34,10 @@ def chat_room(request, room_id):
     """
     Render chat room according to id specified
     """
+    room = Room.objects.get(id=room_id)
+
     return render(request, 'chat/room.html', {
-        'room_id': room_id
+        'room': room
     })
 
 
@@ -44,14 +47,30 @@ def create_chat_room(request):
     Create a new chat room
     Redirect to the new room after successful creation
     """
-    room_id = 1
     form = CreateRoomForm(request.POST)
     if form.is_valid():
         # Create new room
-        return redirect('chat:chat_room', room_id)
+        new_room = form.save(commit=False)
+        new_room.creator = request.user
+        new_room.save()
+        new_room.participants.add(request.user)
+        new_room.moderators.add(request.user)
+
+        return redirect('chat:chat_room', new_room.id)
     else:
         request.session['msg'] = 'Failed to create a new room'
         return redirect('chat:home')
+
+
+@require_POST
+def delete_chat_room(request, room_id):
+    """
+    Delete chat room if current user is the creator
+    """
+    room = Room.objects.get(id=room_id)
+    if room.creator == request.user:
+        mesasge = "Pog"
+    return redirect('chat:home')
 
 
 def register(request):

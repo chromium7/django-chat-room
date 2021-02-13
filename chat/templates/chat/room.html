@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 
-{% block title %}Room {{ room_id }}{% endblock %}
+{% block title %}Room {{ room.id }}{% endblock %}
 
 {% block content %}
     <div id="chat-wrapper">
-        <h3>Room {{ room_id }}</h3>
+        <h3>"{{ room.name }}" ID: {{ room.id }}</h3>
         <div id="chat-container">
             <div id="chat"></div>
         </div>
@@ -16,7 +16,7 @@
 {% endblock %}
 
 {% block javascript %}
-    var url = 'ws://' + window.location.host + '/ws/chat/' + '{{ room_id }}/';
+    var url = 'ws://' + window.location.host + '/ws/chat/' + '{{ room.id }}/';
     var chatSocket = new WebSocket(url);
 
     chatSocket.onmessage = (e) => {

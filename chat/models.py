@@ -11,8 +11,8 @@ class Room(models.Model):
     name = models.CharField(max_length=50)
     creator =  models.ForeignKey(User, on_delete=models.CASCADE, related_name='rooms_created')
     participants = models.ManyToManyField(User, related_name='rooms_joined')
-    moderator = models.ManyToManyField(User, related_name='rooms_moderated')
-    password = models.CharField(max_length=50, default=None, blank=True)
+    moderators = models.ManyToManyField(User, related_name='rooms_moderated')
+    password = models.CharField(max_length=50, default=None, blank=True, null=True)
 
 
 class Message(models.Model):

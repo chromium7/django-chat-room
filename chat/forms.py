@@ -1,8 +1,13 @@
 from django import forms
 from django.contrib.auth.models import User
 
+from .models import Room
+
 
 class UserRegistrationForm(forms.ModelForm):
+    """
+    Form to create a new user accounts
+    """
     password = forms.CharField(label='Password', widget=forms.PasswordInput, help_text='Password')
     password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput, help_text='Repeat password')
 
@@ -29,3 +34,19 @@ class UserRegistrationForm(forms.ModelForm):
         if cd['password'] != cd['password2']:
             raise forms.ValidationError('Passwords don\'t match.')
         return cd['password2']
+
+
+class CreateRoomForm(forms.ModelForm):
+    """
+    Form to create a new room
+    """
+    class Meta:
+        model = Room
+        fields = {'name', 'password'}
+
+    def __init__(self, *args, **kwargs):
+        super(CreateRoomForm, self).__init__(*args, **kwargs)
+        for visible in self.visible_fields():
+            visible.field.widget.attrs['class'] = 'form-control'
+
+        self.order_fields(['name', 'password'])

@@ -1,13 +1,20 @@
 from django.shortcuts import render, redirect, reverse
 from django.views.decorators.http import require_POST
 
-from .forms import UserRegistrationForm
+from .forms import UserRegistrationForm, CreateRoomForm
 
 def index(request):
     """
     Render homepage
     """
-    return render(request, 'chat/index.html')
+    context = {}
+
+    # If there is any error, add to context and delete from session
+    if request.get('msg', None):
+        context['msg'] = request['msg']
+        del request['msg']
+    
+    return render(request, 'chat/index.html', context)
 
 
 @require_POST
@@ -26,6 +33,22 @@ def chat_room(request, room_id):
     return render(request, 'chat/room.html', {
         'room_id': room_id
     })
+
+
+@require_POST
+def create_chat_room(request):
+    """
+    Create a new chat room
+    Redirect to the new room after successful creation
+    """
+    room_id = 1
+    form = CreateRoomForm(request.POST)
+    if form.is_valid():
+        # Create new room
+        return redirect('chat:chat_room', room_id)
+    else:
+        request['msg'] = 'bruh'
+        return redirect('chat:home')
 
 
 def register(request):

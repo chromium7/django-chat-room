@@ -10,8 +10,16 @@ def index(request):
     """
     context = {}
 
-    # Display form
-    context['room_form'] = CreateRoomForm()
+    if request.user.is_authenticated:
+        # Display form
+        context['room_form'] = CreateRoomForm()
+        
+        # Rooms joined and moderated
+        rooms_joined = Room.objects.filter(participants=request.user)
+        rooms_moderated = Room.objects.filter(moderators=request.user) | Room.objects.filter(creator=request.user)
+        
+        context['rooms_joined'] = rooms_joined
+        context['rooms_moderated'] = rooms_moderated
 
     # If there is any error, add to context and delete from session
     if request.session.get('msg'):
@@ -35,6 +43,8 @@ def chat_room(request, room_id):
     Render chat room according to id specified
     """
     room = Room.objects.get(id=room_id)
+    allowed = request.user in room.participants
+    print(allowed)    
 
     return render(request, 'chat/room.html', {
         'room': room
@@ -68,8 +78,10 @@ def delete_chat_room(request, room_id):
     Delete chat room if current user is the creator
     """
     room = Room.objects.get(id=room_id)
-    if room.creator == request.user:
-        mesasge = "Pog"
+    if room and room.creator == request.user:
+        room.delete()
+    else:
+        request.session['msg'] = 'Failed to delete room'
     return redirect('chat:home')
 
 

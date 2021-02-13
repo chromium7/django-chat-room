@@ -6,36 +6,77 @@
     <div class="text-center">
         <h1 class="display-1 mt-3 text-center">Hello, World</h1>
         {% if user.is_authenticated %}
-            {% if msg %}
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ msg }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endif %}
-            <section class="mt-4">
-                <h4>Create a new room:</h4>
-                <form action="{% url 'chat:create_room' %}" method="post" class='text-start'>
-                    {% csrf_token %}
-                    {% for field in room_form %}
-                    <div class="form-group">
-                        <label class="form-label" for="{{ field.auto_id }}">{{ field.label }}</label>
-                        {{ field }}
+        <div class="row">
+            <div class="col-9">
+                {% if msg %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{ msg }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                    {% endfor %}
-                    <p class="text-center mt-2"><button class="btn btn-primary">Create Room</button></p>
-                </form>
-            </section>
-            <hr>
-            <section class="mt-4">
-                <h4>Join a chat room:</h4>
-                <form action="{% url 'chat:chat_redirect' %}" method="post">
-                    {% csrf_token %}
-                    <div class="input-group mb-3">
-                        <input type="number" name="room_id" class="form-control" placeholder="Room's ID" aria-label="Room's ID" aria-describedby="button-addon">
-                        <button class="btn btn-primary" type="submit" id="button-addon">Join</button>
-                    </div>
-                </form>
-            </section>
+                {% endif %}
+                <section class="mt-4">
+                    <h4>Create a new room:</h4>
+                    <form action="{% url 'chat:create_room' %}" method="post" class='text-start'>
+                        {% csrf_token %}
+                        {% for field in room_form %}
+                        <div class="form-group">
+                            <label class="form-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+                            {{ field }}
+                        </div>
+                        {% endfor %}
+                        <p class="text-center mt-2"><button class="btn btn-primary">Create Room</button></p>
+                    </form>
+                </section>
+                <hr>
+                <section class="mt-4">
+                    <h4>Join a chat room:</h4>
+                    <form action="{% url 'chat:chat_redirect' %}" method="post">
+                        {% csrf_token %}
+                        <div class="input-group mb-3">
+                            <input type="number" name="room_id" class="form-control" placeholder="Room's ID" aria-label="Room's ID" aria-describedby="button-addon">
+                            <button class="btn btn-primary" type="submit" id="button-addon">Join</button>
+                        </div>
+                    </form>
+                </section>
+            </div>
+            <div class="col-3">
+                <section class="mt-4">
+                    <h4>Joined Rooms</h4>
+                    <ul class="list-group">
+                        {% for room in rooms_joined %}
+                            <a href="{% url 'chat:chat_room' room.id %}" class='text-reset text-decoration-none'>
+                                <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    {{ room.name }} (#{{ room.id }})
+                                    <span class="badge bg-primary rounded-pill">{{ room.participants.all.count }}</span>
+                                </li>
+                            </a>
+                        {% empty %}
+                            <li class="list-group-item">You have not joined any room yet</li>
+                        {% endfor %}
+                    </ul>
+                </section>
+                <section class="mt-4">
+                    <h4>Moderated Rooms</h4>
+                    <ul class="list-group">
+                        {% for room in rooms_moderated %}
+                            <a href="{% url 'chat:chat_room' room.id %}" class='text-reset text-decoration-none'>
+                                <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    {{ room.name }} (#{{ room.id }})
+                                    {% if room.creator == request.user %}
+                                        <form action="{% url 'chat:delete_room' room.id %}" method="post">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger btn-sm rounded-pill" id="delete-btn">Delete</button>
+                                        </form>
+                                    {% endif %}
+                                </li>
+                            </a>
+                        {% empty %}
+                            <li class="list-group-item">You have not joined any room yet</li>
+                        {% endfor %}
+                    </ul>
+                </section>
+            </div>
+        </div>
         {% else %}
             <h4 class='mt-4'>Please <a href="{% url 'chat:login' %}">login</a> to join a chat room.</h4>
             <h5>Don't have an account? <a href="{% url 'chat:register' %}">Sign up.</a></h5>

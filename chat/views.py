@@ -9,10 +9,13 @@ def index(request):
     """
     context = {}
 
+    # Display form
+    context['room_form'] = CreateRoomForm()
+
     # If there is any error, add to context and delete from session
-    if request.get('msg', None):
-        context['msg'] = request['msg']
-        del request['msg']
+    if request.session.get('msg'):
+        context['msg'] = request.session['msg']
+        del request.session['msg']
     
     return render(request, 'chat/index.html', context)
 
@@ -47,7 +50,7 @@ def create_chat_room(request):
         # Create new room
         return redirect('chat:chat_room', room_id)
     else:
-        request['msg'] = 'bruh'
+        request.session['msg'] = 'Failed to create a new room'
         return redirect('chat:home')
 
 

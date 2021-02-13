@@ -8,8 +8,8 @@ class UserRegistrationForm(forms.ModelForm):
     """
     Form to create a new user accounts
     """
-    password = forms.CharField(label='Password', widget=forms.PasswordInput, help_text='Password')
-    password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput, help_text='Repeat password')
+    password = forms.CharField(label='Password', widget=forms.PasswordInput(), help_text='Password')
+    password2 = forms.CharField(label='Repeat password', widget=forms.PasswordInput(), help_text='Repeat password')
 
     class Meta:
         model = User
@@ -42,6 +42,13 @@ class CreateRoomForm(forms.ModelForm):
     """
     class Meta:
         model = Room
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Room name'}),
+            'password': forms.PasswordInput(attrs={'placeholder': 'Room password'})
+        }
+        labels = {
+            'password': 'Password (leave blank if you want your room public)'
+        }
         fields = {'name', 'password'}
 
     def __init__(self, *args, **kwargs):

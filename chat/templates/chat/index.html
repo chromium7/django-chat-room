@@ -33,8 +33,26 @@
                     <form action="{% url 'chat:chat_redirect' %}" method="post">
                         {% csrf_token %}
                         <div class="input-group mb-3">
-                            <input type="number" name="room_id" class="form-control" placeholder="Room's ID" aria-label="Room's ID" aria-describedby="button-addon">
-                            <button class="btn btn-primary" type="submit" id="button-addon">Join</button>
+                            <input type="number" name="room_id" class="form-control" placeholder="Room's ID">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#passwordModal">Join</button>
+                            <!-- Modal -->
+                            <div class="modal fade" id="passwordModal" tabindex="-1" aria-labelledby="passwordModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="passwordModalLabel">Enter room password</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p class='form-label text-start'>Leave blank if room does not have password</p>
+                                            <input type="password" name="room_password" class='form-control'>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Join room</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </section>

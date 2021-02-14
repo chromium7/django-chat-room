@@ -33,9 +33,37 @@ def index(request):
 def chat_redirect(request):
     """
     Redirect user who input a room number to the corresponding chat room
+    Add user to participant list
     """
-    room_id = int(request.POST['room_id'])
-    return redirect('chat:chat_room', room_id)
+    permission = False
+
+    room_id = request.POST['room_id']
+    password = request.POST['room_password']
+    if not password:
+        password = None
+    
+    if room_id:
+        room = Room.objects.get(id=int(room_id))
+
+        # Check if room exists
+        if not room:
+            request.session['msg'] = 'Room not found'
+            return redirect('chat:home')
+        
+        # Check if passwords match
+        if room.password == password:
+            permission = True
+            # Add user to participant list
+            # or redirect if user is already in the list
+            participants = room.participants.all()
+            if request.user not in participants:
+                room.participants.add(request.user)
+
+    if permission:
+        return redirect('chat:chat_room', int(room_id))
+    else:
+        request.session['msg'] = 'Incorrect password'
+        return redirect('chat:home')
 
 
 def chat_room(request, room_id):
@@ -43,12 +71,14 @@ def chat_room(request, room_id):
     Render chat room according to id specified
     """
     room = Room.objects.get(id=room_id)
-    allowed = request.user in room.participants
-    print(allowed)    
-
-    return render(request, 'chat/room.html', {
-        'room': room
-    })
+    allowed = request.user in room.participants.all()
+    if allowed:
+        return render(request, 'chat/room.html', {
+            'room': room
+        })
+    else:
+        request.session['msg'] = "You do not have the permission to join the room"
+        return redirect('chat:home')
 
 
 @require_POST

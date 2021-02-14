@@ -7,7 +7,7 @@
         <h1 class="display-1 mt-3 text-center">Hello, World</h1>
         {% if user.is_authenticated %}
         <div class="row">
-            <div class="col-9">
+            <div class="col-lg-9">
                 {% if msg %}
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     {{ msg }}
@@ -57,7 +57,7 @@
                     </form>
                 </section>
             </div>
-            <div class="col-3">
+            <div class="col-lg-3 mb-3">
                 <section class="mt-4">
                     <h4>Joined Rooms</h4>
                     <ul class="list-group">

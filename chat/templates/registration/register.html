@@ -5,7 +5,7 @@
 {% block content %}
     <div class="text-center">
         <h1 class="display-1 mt-3">Register</h1>
-        <form action="{% url 'chat:register' %}" method="post" class='w-50 text-start'>
+        <form action="{% url 'chat:register' %}" method="post" class='w-50 text-start m-auto'>
             {% csrf_token %}
             {% for field in user_form %}
                 <div class="mb-3 row">

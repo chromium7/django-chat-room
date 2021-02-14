@@ -3,14 +3,55 @@
 {% block title %}Room {{ room.id }}{% endblock %}
 
 {% block content %}
-    <div id="chat-wrapper">
-        <h3>"{{ room.name }}" ID: {{ room.id }}</h3>
-        <div id="chat-container">
-            <div id="chat"></div>
+    <div class="row mt-4">
+        <div class="col-9">
+            <h3>Room "{{ room.name }}"</h3>
+            <div id="chat-container">
+                <div id="chat"></div>
+            </div>
+            <div id="chat-input" class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Write message here" id="chat-message-input">
+                <button class="btn btn-success" type="button" id="chat-message-submit">Send</button>
+            </div>
         </div>
-        <div id="chat-input" class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="Write message here" id="chat-message-input">
-            <button class="btn btn-success" type="button" id="chat-message-submit">Send</button>
+        <div class="col-3">
+            <section>
+                <h4>Room info</h4>
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        ID: <span>{{ room.id }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Creator: <span>{{ room.creator.username }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Moderators: <span>{{ room.moderators.all.count }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Participants: <span>{{ room.participants.all.count }}</span>
+                    </li>
+                </ul>
+            </section>
+            <section class="mt-4">
+                <h4>Participants</h4>
+                <ul class="list-group">
+                    {% for user in room.participants.all %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ user.username }}
+                            <span class="badges">
+                                {% if user == room.creator %}
+                                    <span class="badge bg-success rounded-pill">Creator</span>                    
+                                {% endif %}
+                                {% if user in room.moderators.all %}
+                                    <span class="badge bg-warning rounded-pill">Mod</span>                    
+                                {% endif %}
+                            </span>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item">You have not joined any room yet</li>
+                    {% endfor %}
+                </ul>
+            </section>
         </div>
     </div>
 {% endblock %}

@@ -17,7 +17,7 @@ def index(request):
         
         # Rooms joined and moderated
         rooms_joined = Room.objects.filter(participants=request.user)
-        rooms_moderated = Room.objects.filter(moderators=request.user) | Room.objects.filter(creator=request.user)
+        rooms_moderated = Room.objects.filter(moderators=request.user)
         
         context['rooms_joined'] = rooms_joined
         context['rooms_moderated'] = rooms_moderated
@@ -96,6 +96,7 @@ def create_chat_room(request):
         new_room.save()
         new_room.participants.add(request.user)
         new_room.moderators.add(request.user)
+        new_room.save()
 
         return redirect('chat:chat_room', new_room.id)
     else:

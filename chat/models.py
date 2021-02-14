@@ -14,6 +14,12 @@ class Room(models.Model):
     moderators = models.ManyToManyField(User, related_name='rooms_moderated')
     password = models.CharField(max_length=50, default=None, blank=True, null=True)
 
+    def participants_count(self):
+        return self.participants.count()
+
+    def moderators_count(self):
+        return self.moderators.count()
+
 
 class Message(models.Model):
     """

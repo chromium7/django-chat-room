@@ -83,7 +83,7 @@
                                     {% if room.creator == request.user %}
                                         <form action="{% url 'chat:delete_room' room.id %}" method="post">
                                             {% csrf_token %}
-                                            <button type="submit" class="btn btn-danger btn-sm rounded-pill" id="delete-btn">Delete</button>
+                                            <button type="submit" class="btn btn-danger btn-sm rounded-pill delete-btn">Delete</button>
                                         </form>
                                     {% endif %}
                                 </li>

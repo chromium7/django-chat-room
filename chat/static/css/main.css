@@ -56,7 +56,7 @@
   margin: auto auto auto 2em;
 }
 
-#delete-btn {
+.btn.delete-btn {
   display: inline-block;
   padding: 0.35em 0.65em;
   font-size: 0.75em;

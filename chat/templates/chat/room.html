@@ -30,6 +30,21 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         Participants: <span>{{ room.participants.all.count }}</span>
                     </li>
+                    {% if room.creator == request.user %}
+                        <li class="list-group-item">
+                            <form action="{% url 'chat:delete_room' room.id %}" method="post">
+                                {% csrf_token %}
+                                <button class="btn btn-danger" type="submit">Delete Room</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li class="list-group-item">
+                            <form action="{% url 'chat:leave_room' room.id %}" method="post">
+                                {% csrf_token %}
+                                <button class="btn btn-danger" type="submit">Leave Room</button>
+                            </form>
+                        </li>
+                    {% endif %}
                 </ul>
             </section>
             <section class="mt-4">
@@ -39,15 +54,38 @@
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             {{ user.username }}
                             <span class="badges">
-                                {% if user == request.user %}
-                                    <div class="badge bg-info rounded-pill">Me</div>
-                                {% endif %}
-                                {% if user == room.creator %}
-                                    <span class="badge bg-success rounded-pill">Creator</span>                    
-                                {% endif %}
-                                {% if user in room.moderators.all %}
-                                    <span class="badge bg-warning rounded-pill">Mod</span>                    
-                                {% endif %}
+                                {% if request.user == room.creator %}
+                                    {% if user == request.user %}
+                                        <div class="badge bg-info rounded-pill">Me</div>
+                                        <div class="badge bg-success rounded-pill">Creator</div>
+                                    {% else %}
+                                        <form action="{% url 'chat:kick_user' room.id user.id %}" method="post">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger rounded-pill delete-btn">Kick</button>
+                                        </form>
+                                        {% if user in room.moderators.all %}
+                                            <form action="{% url 'chat:unmod_user' room.id user.id %}" method="post">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-warning rounded-pill delete-btn">Unmod</button>
+                                            </form>
+                                        {% else %}
+                                            <form action="{% url 'chat:mod_user' room.id user.id %}" method="post">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-success rounded-pill delete-btn">Make mod</button>
+                                            </form>
+                                        {% endif %}
+                                    {% endif %}
+                                {% else %}
+                                    {% if user == request.user %}
+                                        <div class="badge bg-info rounded-pill">Me</div>
+                                    {% endif %}
+                                    {% if user == room.creator %}
+                                        <span class="badge bg-success rounded-pill">Creator</span>                    
+                                    {% endif %}
+                                    {% if user in room.moderators.all %}
+                                        <span class="badge bg-warning rounded-pill">Mod</span>                    
+                                    {% endif %}
+                                {% endif %}                                
                             </span>
                         </li>
                     {% empty %}

@@ -13,5 +13,10 @@ urlpatterns = [
     path('chat/create/', views.create_chat_room, name="create_room"),
     path('chat/delete/<int:room_id>/', views.delete_chat_room, name="delete_room"),
     path('chat/<int:room_id>/', views.chat_room, name="chat_room"),
+    path('chat/<int:room_id>/leave/', views.leave_chat_room, name="leave_room"),
+    path('chat/<int:room_id>/kick/<int:user_id>/', views.kick_user, name="kick_user"),
+    path('chat/<int:room_id>/mod/<int:user_id>/', views.mod_user, name="mod_user"),
+    path('chat/<int:room_id>/unmod/<int:user_id>/', views.unmod_user, name="unmod_user"),
+    
     
 ]

@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, reverse
 from django.views.decorators.http import require_POST
 
@@ -113,6 +114,62 @@ def delete_chat_room(request, room_id):
     else:
         request.session['msg'] = 'Failed to delete room'
     return redirect('chat:home')
+
+
+@require_POST
+def leave_chat_room(request, room_id):
+    """
+    Remove current user from the room's participant and moderator list
+    """
+    room = Room.objects.get(id=room_id)
+    user = request.user
+
+    room.participants.remove(user)
+    if user in room.moderators.all():
+        room.moderators.remove(user)
+    
+    return redirect('chat:home')
+
+
+@require_POST
+def kick_user(request, room_id, user_id):
+    """
+    Delete user from a room's participant and moderator list
+    """
+    room = Room.objects.get(id=room_id)
+    user = User.objects.get(id=user_id)
+
+    room.participants.remove(user)
+    if user in room.moderators.all():
+        room.moderators.remove(user)
+
+    return redirect('chat:chat_room', room_id)
+
+
+@require_POST
+def mod_user(request, room_id, user_id):
+    """
+    Add user to the rooms moderator list
+    """
+    room = Room.objects.get(id=room_id)
+    user = User.objects.get(id=user_id)
+
+    room.moderators.add(user)
+
+    return redirect('chat:chat_room', room_id)
+
+
+@require_POST
+def unmod_user(request, room_id, user_id):
+    """
+    Remove user from rooms moderator list
+    """
+    room = Room.objects.get(id=room_id)
+    user = User.objects.get(id=user_id)
+
+    room.moderators.remove(user)
+
+    return redirect('chat:chat_room', room_id)
 
 
 def register(request):

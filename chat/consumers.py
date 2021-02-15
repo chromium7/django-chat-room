@@ -7,10 +7,14 @@ URLs are mapped to consumers through routing classes that allows combining and s
 '''
 
 import json
+from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import async_to_sync
 
+from django.contrib.auth.models import User
 from django.utils import timezone
+
+from .models import Room, Message
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -45,7 +49,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
         # Called whenever data is received
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
+        room_id = text_data_json['room_id']
         now = timezone.now()
+
+        # Save message to database
+        await self.save_message(room_id, self.user.id, message)
 
         # Send the message to room group
         await self.channel_layer.group_send(
@@ -62,3 +70,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def chat_message(self, event):
         # Send message to WebSocket
         await self.send(text_data=json.dumps(event))
+
+    # Store to database
+    @database_sync_to_async
+    def save_message(self, room_id, user_id, message):
+        user = User.objects.get(id = user_id)
+        room = Room.objects.get(id = room_id)
+        new_message = Message.objects.create(
+            user = user,
+            room = room,
+            message = message,
+        )
+        new_message.save()

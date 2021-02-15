@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load tz %}
+
 {% block title %}Room {{ room.id }}{% endblock %}
 
 {% block content %}
@@ -7,7 +9,18 @@
         <div class="col-lg-9">
             <h3>Room "{{ room.name }}"</h3>
             <div id="chat-container">
-                <div id="chat"></div>
+                <div id="chat">
+                    {% for message in messages %}
+                        <div class="message {% if message.user == request.user %}me{% else %}other{% endif %}">
+                            <strong>{% if message.user == request.user %}Me{% else %}{{ message.user }}{% endif %}</strong> 
+                            {% timezone "Asia/Jakarta" %}
+                            <span class="date">{{ message.created|date:'g:i A' }}</span>
+                            {% endtimezone %}
+                            <br>
+                            {{ message.message }}
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
             <div id="chat-input" class="input-group mb-3">
                 <input type="text" class="form-control" placeholder="Write message here" id="chat-message-input">
@@ -100,6 +113,7 @@
 {% block javascript %}
     var url = 'ws://' + window.location.host + '/ws/chat/' + '{{ room.id }}/';
     var chatSocket = new WebSocket(url);
+    var chat = document.querySelector('#chat');
 
     chatSocket.onmessage = (e) => {
         var data = JSON.parse(e.data);
@@ -110,8 +124,6 @@
         var isMe = data.user === '{{ request.user }}';
         var source = isMe ? 'me' : 'other';
         var name = isMe? 'Me' : data.user;
-
-        var chat = document.querySelector('#chat');
 
         // Add new message to the chat box
         var newMessage = document.createElement('div');
@@ -134,7 +146,7 @@
         var message = input.value;
         if (message) {
             // Send message in JSON format
-            chatSocket.send(JSON.stringify({'message': message}));
+            chatSocket.send(JSON.stringify({'message': message, 'room_id': {{ room.id }} }));
 
             // Clear input
             input.value = "";
@@ -150,4 +162,6 @@
             submit.click();
         }
     });
+    chat.scrollTop = chat.scrollHeight;
+
 {% endblock %}

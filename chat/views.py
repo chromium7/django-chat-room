@@ -71,12 +71,14 @@ def chat_room(request, room_id):
     """
     Render chat room according to id specified
     """
+    context = {}
     room = Room.objects.get(id=room_id)
     allowed = request.user in room.participants.all()
     if allowed:
-        return render(request, 'chat/room.html', {
-            'room': room
-        })
+        messages = room.chat_logs.all()
+        context['room'] = room
+        context['messages'] = messages
+        return render(request, 'chat/room.html', context)
     else:
         request.session['msg'] = "You do not have the permission to join the room"
         return redirect('chat:home')

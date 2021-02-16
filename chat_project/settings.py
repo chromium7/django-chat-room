@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 
+import django_heroku
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'tc$h=x6!wso==bqy-kb4zu(dvs_p8y(4&ans4kd58whc9uyo)v'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1:8000', '.herokuapp.com']
 
@@ -153,3 +155,7 @@ LOGIN_REDIRECT_URL = 'chat:home'
 LOGOUT_REDIRECT_URL = 'chat:home'
 LOGIN_URL = 'chat:login'
 LOGOUT_URL = 'chat:logout'
+
+
+# Heroku
+django_heroku.settings(locals())
